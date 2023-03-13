@@ -97,6 +97,7 @@ nav li {
 
 li:hover {
 	color: #B1663C;
+	cursor: pointer;
 }
 #introduction {
 	display: flex;
@@ -135,8 +136,9 @@ li:hover {
 
 .gallery img {
 	width: 100%;
-
 }
+
+
 #contact {
 	width: 50%;
 margin: auto;
@@ -185,4 +187,38 @@ footer nav ul {
 	justify-content: flex-end;
 	margin: 2em
 }
+
+.categories{
+	display: flex;
+	justify-content: center;
+	margin-top: 51px;
+	margin-bottom: 51px;
+}
+
+.filter__btn{
+	height: 37px;
+	border: 1px solid #1d6154;
+	border-radius: 60px;
+	color: #1d6154;
+	font-family: Syne;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px;
+	padding: 9px 25px 9px 25px;
+	margin-right: 10px;
+}
+
+.filter__btn:hover{
+	cursor: pointer;
+	background: white;
+	
+}
+
+.filter__btn.active{
+	background: #1D6154;
+	color: white;
+}
+
+
+
 
