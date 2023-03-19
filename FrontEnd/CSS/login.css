@@ -6,7 +6,6 @@ body{
 }
 
 
-
 .login.active {
 	font-weight: 700;
 }
@@ -56,3 +55,8 @@ body{
 	margin: 2em
 }
 
+.error-msg{
+	display: none;
+	font: 700 18px Syne, sans-serif;
+	color: red;
+}

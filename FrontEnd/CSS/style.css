@@ -50,11 +50,6 @@ table {
 /** end reset css**/
 
 
-/*=============================================
-=            index.html                     =
-=============================================*/
-
-
 
 body {
 	max-width: 1140px;
@@ -239,8 +234,13 @@ footer nav ul {
 	color: white;
 }
 
-
-/*=====  End of index.html  ======*/
+.error-msg{
+	display: none;
+	font: 700 18px Syne, sans-serif;
+	color: red;
+	text-align: center;
+	margin-bottom: 30px;
+}
 
 
 

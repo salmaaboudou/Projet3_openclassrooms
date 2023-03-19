@@ -1,18 +1,20 @@
-
-/*=============================================
-= Récupération des travaux & des catégories   =
-=============================================*/
+const urlGet = "http://localhost:5678/api/works";
+const gallery = document.querySelector(".gallery");
+const categories = document.querySelector(".categories");
+const errorMsg = document.querySelector(".error-msg");
+const setCategoriesName = new Set();
 
 function getAllWorksAndCategories() {
-    const urlGet = "http://localhost:5678/api/works";
-    const gallery = document.querySelector(".gallery");
-    const categories = document.querySelector(".categories");
-    const setCategoriesName = new Set();
     fetch(urlGet)
-        .then((response) => response.json())
+        .then((response) => {
+            if (!response.ok) {
+                if (response.status === 500) {
+                    throw new Error(`Une erreur inconnue est survenue`);
+                }
+            }
+            return response.json();
+        })
         .then((works) => {
-            //console.log(works);
-
             /*----------  Travaux  ----------*/
 
             for (let i = 0; i < works.length; i++) {
@@ -24,7 +26,7 @@ function getAllWorksAndCategories() {
                 // Ajout des attributs src , alt, titres, class aux balises
                 imageElement.setAttribute("src", works[i].imageUrl);
                 imageElement.setAttribute("alt", works[i].title);
-                figureElement.setAttribute("class","figure-element");
+                figureElement.setAttribute("class", "figure-element");
                 captionElement.textContent = works[i].title;
 
                 // Ajout de l'image et de la caption à l'élément figure
@@ -36,14 +38,11 @@ function getAllWorksAndCategories() {
 
                 // Création d'un set (objet) contenant les noms des catégories
                 setCategoriesName.add(works[i].category.name);
-
             }
-
 
             /*----------  Catégories  ----------*/
 
             setCategoriesName.forEach((name) => {
-
                 // Création des boutons filtres pour chaque categorie
                 const filterBtn = document.createElement("button");
 
@@ -54,32 +53,27 @@ function getAllWorksAndCategories() {
 
                 // Ajout des boutons filtres au niveau de la balise "categories"
                 categories.appendChild(filterBtn);
-
             });
 
             /*----------  Fonction filtre  ----------*/
-            
+
             const allFilterBtns = document.querySelectorAll(".filter__btn");
             const figureElements = document.querySelectorAll(".figure-element");
 
             allFilterBtns.forEach((btn) => {
-
                 btn.addEventListener("click", () => {
-                    
                     allFilterBtns.forEach((btn) => {
-
                         // Supprimez la classe "active" de tous les boutons filtre
                         btn.classList.remove("active");
-
-                    })
+                    });
                     // Ajoutez la classe "active" au boutons filtre sélectionné
                     btn.classList.add("active");
 
-                    // filtrer les figures pour chaque catégories 
+                    // filtrer les figures pour chaque catégories
                     figureElements.forEach((figure, index) => {
                         //console.log(index)
                         if (works[index].category.name == btn.textContent) {
-                            figure.style.display ="block";
+                            figure.style.display = "block";
                         } else {
                             figure.style.display = "none";
                         }
@@ -87,16 +81,13 @@ function getAllWorksAndCategories() {
                         if (btn.textContent == "Tous") {
                             figure.style.display = "block";
                         }
-                            
                     });
-
                 });
-
             });
-
         })
         .catch((error) => {
-
+            errorMsg.textContent = error.message;
+            errorMsg.style.display = "block";
         });
 }
 

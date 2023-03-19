@@ -28,7 +28,7 @@ exports.signup = async (req, res) => {
 exports.login = async (req, res) => {
 	const user = await Users.findOne({where: {email: req.body.email}});
 	if(user === null){
-		return res.status(404).json({message: 'user not found'})
+		return res.status(404).json({message: 'user not found'}) 
 	}else {
 		const valid = await bcrypt.compare(req.body.password, user.password)
 		if(!valid){
