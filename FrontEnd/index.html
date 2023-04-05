@@ -6,11 +6,67 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Work+Sans&display=swap" rel="stylesheet">
 	<meta name="description" content="Portfolio Sophia Bluel - Architecte d'intérieur">
 	<link rel="stylesheet" href="CSS/style.css">
+	<script src="https://kit.fontawesome.com/11562bc513.js" crossorigin="anonymous"></script>
 </head>
 <body>
+<aside id="modal">
+	<div id="modal-wrapper">
+		<div class="cross-arrow__container">
+			<button id="modal-back-btn"><i class="fa-solid fa-arrow-left-long"></i></button>
+			<button id="modal-close-btn"><i class="fa-solid fa-xmark"></i></button>
+		</div>
+
+		
+		<!----------  modal galerie  ---------->
+		
+		
+			<div id="modal-gallery">
+				<h1 class="modal-title">Galerie photo</h1>
+				<div id="modal-figures"></div>
+				<button class="submit-btn submit-btn-1">Ajouter une photo</button>
+				<a id="delete-gallery-btn" href="#">Supprimer la galerie</a>
+				<span class="error-msg"></span> 
+			</div>
+
+		
+		<!----------  modal ajouter une photo  ---------->
+		
+			<div id="modal-add-image" style="display: none;">
+				<h1 class="modal-title modal-title-page2">Ajout photo</h1>
+				<form>
+					<label for="photo"><img id="imagePreview" src="assets/icons/photo-icon.png" alt="Image preview"></label>
+					<div id="input-file-container">
+						<input type="file" id="photo" name="photo"  onchange="previewImage(this);">
+						<a href="#modal-add-image">+ Ajouter une photo</a>
+					</div>
+					<span>jpg, png : 4mo max</span>
+					<label for="title">Titre</label>
+					<input type="text" name="title" id="input-title">
+					<label for="category">Catégorie</label>
+					<select name="category" id="category">
+						<option value="" selected disabled></option>
+						<option value="objets">Objets</option>
+						<option value="Appartements">Appartements</option>
+						<option value="Hotels-&-restaurants">Hotels & restaurants</option>
+					</select>
+					<hr>
+					<button id="validate-btn" class="submit-btn submit-btn-2" disabled>Valider </button>
+				</form> 
+			</div>
+
+
+
+	</div>
+</aside>
+<div class="edit-bar">
+	<div class="edit-bar__content">
+		<span> <i class="fa-regular fa-pen-to-square"></i> Mode édition</span>
+		<button>publier les changements</button>
+	</div>
+</div>
 <header>
 	<h1>Sophie Bluel <span>Architecte d'inteérieur</span></h1>
 	<nav>
@@ -18,14 +74,15 @@
 			<li><a href="#portfolio">projets</a></li>
 			<li> <a href="#contact">contact</a></li>
 			<li><a href="login.html">login</a></li>
-			<li><img src="./assets/icons/instagram.png" alt="Instagram"></li>
+			<li><img src="assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
 </header>
 <main>
 	<section id="introduction">
 		<figure>
-			<img src="./assets/images/sophie-bluel.png" alt="">
+			<img src="./assets/images/sophie-bluel.png" alt="Photo de Sophia Bluel">
+			<a href="#modal" class="edit__button edit__button--first"> <i class="fa-regular fa-pen-to-square"></i> modifier</a>
 		</figure>
 		<article>
 			<h2>Designer d'espace</h2>
@@ -35,7 +92,10 @@
 		</article>
 	</section>
 	<section id="portfolio">
-		<h2>Mes Projets</h2>
+		<div class="edit-flex">		
+			<h2>Mes Projets</h2>
+			<a href="#modal" class="edit__button edit__button--two"> <i class="fa-regular fa-pen-to-square"></i> modifier</a>
+		</div>
 		<div class="categories">
 			<button class="filter__btn active" id="Tous">Tous</button>
 		</div>
@@ -57,7 +117,6 @@
 		</form>
 	</section>
 </main>
-
 <footer>
 	<nav>
 		<ul>
@@ -66,5 +125,6 @@
 	</nav>
 </footer>
 <script src="js/script.js"></script>
+<script src="js/modale.js"> </script>
 </body>
 </html>

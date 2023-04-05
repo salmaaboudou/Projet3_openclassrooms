@@ -3,6 +3,8 @@ const gallery = document.querySelector(".gallery");
 const categories = document.querySelector(".categories");
 const errorMsg = document.querySelector(".error-msg");
 const setCategoriesName = new Set();
+// const figureElementDelete = document.querySelector('.figure-element[data-id-work-main="data-id-work-modal"]');
+// console.log(figureElementDelete)
 
 function getAllWorksAndCategories() {
     fetch(urlGet)
@@ -16,8 +18,8 @@ function getAllWorksAndCategories() {
         })
         .then((works) => {
             /*----------  Travaux  ----------*/
-
-            for (let i = 0; i < works.length; i++) {
+            console.log(works)
+            for (let i in works) {
                 // Création des balises figures, img et figcaptions
                 const figureElement = document.createElement("figure");
                 const imageElement = document.createElement("img");
@@ -26,6 +28,7 @@ function getAllWorksAndCategories() {
                 // Ajout des attributs src , alt, titres, class aux balises
                 imageElement.setAttribute("src", works[i].imageUrl);
                 imageElement.setAttribute("alt", works[i].title);
+                figureElement.setAttribute("data-id-work-main", works[i].id);  // id pour delete les works
                 figureElement.setAttribute("class", "figure-element");
                 captionElement.textContent = works[i].title;
 
@@ -86,6 +89,7 @@ function getAllWorksAndCategories() {
             });
         })
         .catch((error) => {
+            console.log(error.message);
             errorMsg.textContent = error.message;
             errorMsg.style.display = "block";
         });

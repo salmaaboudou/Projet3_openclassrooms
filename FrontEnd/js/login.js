@@ -45,12 +45,13 @@ form.addEventListener("submit", (e) => {
             return response.json();
         })
         .then((result) => {
-            // Stockage du token dans le local storage
-            localStorage.setItem("token", result.token);
+            // Stockage du token dans le session storage
+            sessionStorage.setItem("token", result.token);
             // Rediriger l'utilisateur vers la page d'acceuil
             window.location.href = "index.html"; 
         })
         .catch((error) => {
+            console.log(error.message);
            errorMsg.textContent = error.message;
            errorMsg.style.display = "block";
         });
