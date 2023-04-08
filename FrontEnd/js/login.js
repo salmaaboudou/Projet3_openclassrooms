@@ -1,7 +1,9 @@
 const urlLogin = "http://localhost:5678/api/users/login";
 const errorMsg = document.querySelector(".error-msg");
 
+
 form.addEventListener("submit", (e) => {
+    console.log("jjjjjj")
     // Stockage des données du formulaire dans l'objet formData
     const inputEmail = document.querySelector("#email");
     const inputPassword = document.querySelector("#password");
@@ -9,7 +11,7 @@ form.addEventListener("submit", (e) => {
     formData.append("email", inputEmail.value);
     formData.append("password", inputPassword.value);
 
-    // Convertir les données du formulaire en JSON
+    // Créer un objet
     const jsonData = {};
     for (const [key, value] of formData.entries()) {
         jsonData[key] = value;
@@ -26,7 +28,7 @@ form.addEventListener("submit", (e) => {
             "Content-Type": "application/json",
         },
         body: JSON.stringify(jsonData),
-    }; 
+    };
 
     console.log(jsonData);
 
@@ -48,12 +50,11 @@ form.addEventListener("submit", (e) => {
             // Stockage du token dans le session storage
             sessionStorage.setItem("token", result.token);
             // Rediriger l'utilisateur vers la page d'acceuil
-            window.location.href = "index.html"; 
+            window.location.href = "../index.html";
         })
         .catch((error) => {
             console.log(error.message);
-           errorMsg.textContent = error.message;
-           errorMsg.style.display = "block";
+            errorMsg.textContent = error.message;
+            errorMsg.style.display = "block";
         });
 });
-

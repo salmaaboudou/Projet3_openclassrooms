@@ -564,6 +564,7 @@ hr {
     border-radius: 10px;
     font-size: 24px;
     padding: 26px 0 0 30px;
+    display: none;
 }
 
 #modal-back-btn:hover {
@@ -573,6 +574,7 @@ hr {
 #modal-add-image {
     width: 100%;
     display: inline-block;
+    display: none;
 }
 
 #modal-add-image form {
@@ -581,8 +583,9 @@ hr {
     align-items: center;
 }
 
-#modal-add-image form img {
+#modal-add-image #iconPreviewImage {
     margin-bottom: 21px;
+
 }
 
 #input-file-container {
@@ -656,7 +659,7 @@ hr {
     margin-bottom: 10px;
 }
 
-#validate-btn {
+#validate-btn{
 	width: 55%;
     margin-top: 32px;
     margin-bottom: 57px;
@@ -677,3 +680,17 @@ hr {
 	background-color: white;
 }
 
+#imagePreview{
+	width: 129px;
+	height: 193px;
+	margin-bottom: 8px;
+}
+
+#removeImageButton {
+	font-size: 10px;
+	color: black;
+	border: none;
+	cursor: pointer;
+	margin-bottom: 30px;
+	text-decoration: underline;
+}

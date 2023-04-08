@@ -20,7 +20,7 @@
 		</div>
 
 		
-		<!----------  modal galerie  ---------->
+		<!----------  modal page 1 ---------->
 		
 		
 			<div id="modal-gallery">
@@ -32,28 +32,29 @@
 			</div>
 
 		
-		<!----------  modal ajouter une photo  ---------->
+		<!----------  modal page 2  ---------->
 		
-			<div id="modal-add-image" style="display: none;">
+			<div id="modal-add-image">
 				<h1 class="modal-title modal-title-page2">Ajout photo</h1>
-				<form>
-					<label for="photo"><img id="imagePreview" src="assets/icons/photo-icon.png" alt="Image preview"></label>
+				<form id="formAddImage">
+					<img id="imagePreview" src="" alt="" />
+					<button id="removeImageButton">Supprimer</button>
+					<label for="photo"><img id="iconPreviewImage" src="assets/icons/photo-icon.png" alt="Aperçu de l'image"></label>
 					<div id="input-file-container">
-						<input type="file" id="photo" name="photo"  onchange="previewImage(this);">
+						<input type="file" accept="image/jpeg, image/png" maxlength="4194304" id="file" name="photo"  onchange="previewImage(event);" >
 						<a href="#modal-add-image">+ Ajouter une photo</a>
 					</div>
-					<span>jpg, png : 4mo max</span>
+					<span id="imageRestriction">jpg, png : 4mo max</span>
 					<label for="title">Titre</label>
-					<input type="text" name="title" id="input-title">
+					<input type="text" name="title" id="input-title" required>
 					<label for="category">Catégorie</label>
-					<select name="category" id="category">
-						<option value="" selected disabled></option>
-						<option value="objets">Objets</option>
-						<option value="Appartements">Appartements</option>
-						<option value="Hotels-&-restaurants">Hotels & restaurants</option>
+					<select name="category" id="category" required>
+						<option value="1">Objets</option>
+						<option value="2">Appartements</option>
+						<option value="3">Hotels & restaurants</option>
 					</select>
 					<hr>
-					<button id="validate-btn" class="submit-btn submit-btn-2" disabled>Valider </button>
+					<button id="validate-btn" class="submit-btn submit-btn-2" disabled>Valider</button>
 				</form> 
 			</div>
 
@@ -73,7 +74,7 @@
 		<ul>
 			<li><a href="#portfolio">projets</a></li>
 			<li> <a href="#contact">contact</a></li>
-			<li><a href="login.html">login</a></li>
+			<li><a href="html/login.html">login</a></li>
 			<li><img src="assets/icons/instagram.png" alt="Instagram"></li>
 		</ul>
 	</nav>
