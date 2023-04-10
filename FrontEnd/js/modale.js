@@ -1,6 +1,8 @@
-/*----------  Fonction suppression travaux  ----------*/
+/*----------  FONCTIONS SUPPRESSION TRAVAUX  ----------*/
 
-function deleteWork(idWorkModal, figureModal) {
+const messageSpan = document.querySelector(".error-msg");
+
+function deleteWork(idWorkModal, figureModalParent) {
     const token = sessionStorage.getItem("token");
     fetch("http://localhost:5678/api/works/" + idWorkModal, {
         method: "DELETE",
@@ -10,22 +12,68 @@ function deleteWork(idWorkModal, figureModal) {
     })
         .then((response) => {
             if (!response.ok) {
-                throw new Error("Failed to delete item");
+                throw new Error("Échec de la suppression de l'élément");
             }
-            console.log("Item deleted successfully");
         })
         .then(() => {
-            figureModal.remove();
-            // récupérer l'élément qui a un idWorkMain = à idWorkModal de la figure en cours de surppression
+            figureModalParent.remove();
+            // élément avec idWorkMain = à idWorkModal de la figure en cours de surppression
             const figureMainToDelete = document.querySelector('.figure-element[data-id-work-main="' + idWorkModal + '"]');
             figureMainToDelete.remove();
+            messageSpan.style.display="block";
+            messageSpan.textContent = "L'élément a été supprimé avec succès";
+            messageSpan.style.color="green";
+
         })
         .catch((error) => {
             console.error(error);
+            messageSpan.style.display="block";
         });
 }
 
-/*----------  Aperçu image modal  ----------*/
+function deleteAllWork(idWorkModal,figureModal){
+    const token = sessionStorage.getItem("token");
+    const messageSpan = document.querySelector(".error-msg");
+
+            fetch("http://localhost:5678/api/works/" + idWorkModal, {
+            method: "DELETE",
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Échec de la suppression de la galerie");
+                }
+            })
+            .then(() => {
+                figureModal.remove();
+                const figuresMainToDelete = document.querySelectorAll('.figure-element[data-id-work-main="' + idWorkModal + '"]');
+                figuresMainToDelete.forEach((figureMain) => {
+                    figureMain.remove();
+                });
+                messageSpan.style.display="block";
+                messageSpan.textContent = "La galerie a été supprimé avec succès";
+                messageSpan.style.color="green";
+            })
+    .catch((error) => {
+        console.error(error);
+        messageSpan.style.display="block";
+        messageSpan.textContent = "Échec de la suppression de la galerie";
+    });
+
+}
+
+
+
+
+
+
+
+
+
+
+/*----------  FONCTION APERÇU IMAGE MODALE  ----------*/
 
 const imagePreview = document.getElementById("imagePreview");
 imagePreview.style.display = "none";
@@ -39,7 +87,6 @@ function previewImage(event) {
             if (file.size <= 4194304) {
                 var reader = new FileReader();
                 reader.onload = function (event) {
-                    // affiche l'aperçu de l'image
                     imagePreview.src = event.target.result;
                     document.getElementById("imagePreview").style.display = "block";
                     document.getElementById("iconPreviewImage").style.display = "none";
@@ -64,9 +111,7 @@ function previewImage(event) {
 
     removeImageButton.addEventListener("click", (e) => {
         e.preventDefault();
-        // Supprimer l'aperçu de l'image
         imagePreview.style.display = "none";
-        // Réafficher les balises
         document.getElementById("imagePreview").style.display = "none";
         document.getElementById("iconPreviewImage").style.display = "block";
         document.getElementById("input-file-container").style.display = "block";
@@ -75,7 +120,11 @@ function previewImage(event) {
     });
 }
 
-/*----------  Page d'acceuil en mode édition   ----------*/
+
+
+
+
+/*----------  PAGE D'ACCEUIL EN MODE EDITION   ----------*/
 
 const editBar = document.querySelector(".edit-bar");
 const editButton = document.querySelectorAll(".edit__button");
@@ -91,7 +140,11 @@ if (sessionStorage.getItem("token")) {
     });
 }
 
-/*----------  Ouverture/fermeture modale  ----------*/
+
+
+
+
+/*----------  OUERTURE/FERMETURE MODALE ----------*/
 
 editButton.forEach((button) => {
     button.addEventListener("click", () => {
@@ -109,15 +162,24 @@ closeModalBtn.addEventListener("click", () => {
     modal.style.display = "none";
 });
 
-/*----------  Ajout photos dans modale  ----------*/
 
-const urlGetGallery = "http://localhost:5678/api/works";
 
-fetch(urlGetGallery)
+
+
+
+
+
+/*---------- API : GET & DELETE WORKS FROM THE MODAL ----------*/
+
+const urlGetWorks = "http://localhost:5678/api/works";
+
+fetch(urlGetWorks)
     .then((response) => {
         if (!response.ok) {
             if (response.status === 500) {
                 throw new Error(`Une erreur inconnue est survenue`);
+            } else if (response.status === 401) {
+                throw new Error(`Non autorisé`);
             }
         }
         return response.json();
@@ -137,7 +199,7 @@ fetch(urlGetGallery)
             imageModal.setAttribute("src", works[i].imageUrl);
             imageModal.setAttribute("alt", works[i].title);
 
-            // Icons delete & move
+            // Icons 
             const iconDeleteModal = document.createElement("i");
             const iconMoveModal = document.createElement("i");
             iconDeleteModal.setAttribute("class", "delete-btn fa-solid fa-trash-can");
@@ -156,34 +218,46 @@ fetch(urlGetGallery)
             const linkCaptionModal = document.createElement("a");
             linkCaptionModal.setAttribute("href", "#");
             linkCaptionModal.textContent = "éditer";
+            document.querySelector("#empty-gallery-msg").style.display="none";
 
-            // Ajout des img , icon et figcaption dans figures
+            // AppendChilds
             figureModal.appendChild(imageModal);
             figureModal.appendChild(iconDeleteModal);
             figureModal.appendChild(iconMoveModal);
             captionModal.appendChild(linkCaptionModal);
             figureModal.appendChild(captionModal);
 
-            // Ajout des figures dans la div figuresContainer
             figuresContainer.appendChild(figureModal);
         }
 
-        const addPhotoBtn = document.querySelector(".submit-btn");
+        const addPhotoButton = document.querySelector(".submit-btn");
         const modalGallery = document.querySelector("#modal-gallery");
-        modalGallery.insertBefore(figuresContainer, addPhotoBtn);
+        modalGallery.insertBefore(figuresContainer, addPhotoButton);
 
         /*----------  Suppression éléments galerie  ----------*/
 
         let deleteBtn = document.querySelectorAll(".delete-btn");
-
+        const deleteAllWorkButton = document.querySelector("#delete-gallery-btn");
         deleteBtn.forEach((btn) => {
             btn.addEventListener("click", (e) => {
-                e.preventDefault(); // empêche le rechargement de la page
-                const figureModal = btn.parentNode; // recupère la balise parente du bouton
-                const idWorkModal = figureModal.dataset.idWorkModal; // on récupère les id personnalisé des figure qu'on a recup de l'api
+                e.preventDefault(); 
+                const figureModalParent = btn.parentNode; // recupère la balise parente du bouton
+                const idWorkModal = figureModalParent.dataset.idWorkModal; // on récupère les id personnalisé des figure qu'on a recup de l'api
                 console.log(idWorkModal);
-                deleteWork(idWorkModal, figureModal); // figureModal = l'élément dans le DOM
+                deleteWork(idWorkModal, figureModalParent); // figureModal = l'élément dans le DOM
             });
+        });
+
+        deleteAllWorkButton.addEventListener("click", (e) => {
+            e.preventDefault();
+            const allFigureModal = document.querySelectorAll(".modal-figure");
+            console.log(allFigureModal)
+            allFigureModal.forEach(figureModal => {
+                const idWorkModal = figureModal.getAttribute('data-id-work-modal');
+                console.log(idWorkModal);
+                deleteAllWork(idWorkModal,figureModal);
+            })
+           
         });
     })
     .catch((error) => {
@@ -192,28 +266,18 @@ fetch(urlGetGallery)
         errorMsg.style.display = "block";
     });
 
-/*----------  Changement page modale ----------*/
 
-const modalBackBtn = document.querySelector("#modal-back-btn");
-const modalGalleryPage = document.querySelector("#modal-gallery");
-const modalAddPhotoPage = document.querySelector("#modal-add-image");
-const addPhotoButton = document.querySelector(".submit-btn.submit-btn-1");
 
-modalBackBtn.addEventListener("click", () => {
-    modalGalleryPage.style.display = "flex";
-    modalAddPhotoPage.style.display = "none";
-    modalBackBtn.style.display = "none";
-});
 
-addPhotoButton.addEventListener("click", () => {
-    modalGalleryPage.style.display = "none";
-    modalAddPhotoPage.style.display = "block";
-    modalBackBtn.style.display = "block";
-});
 
-/*----------  Envoie travaux API  ----------*/
+
+
+
+/*----------  API POST : SEND NEW WORK ----------*/
 
 const formAddImage = document.querySelector("#formAddImage");
+const figuresContainer = document.querySelector("#modal-figures");
+const messageDiv = document.getElementById("message");
 const submitButton = document.querySelector("#validate-btn");
 const inputTitle = document.querySelector("#input-title");
 const inputSelect = document.querySelector("select");
@@ -233,21 +297,13 @@ function enableSubmitButton() {
 
 formAddImage.addEventListener("submit", (e) => {
     e.preventDefault();
-    // Stockage des données du formulaire dans l'objet formData
+    // Stockage données du formulaire dans l'objet formData
     const formData = new FormData();
     const file = inputFile.files[0];
     formData.append("title", inputTitle.value);
     formData.append("image", file);
     formData.append("category", inputSelect.value);
 
-
-    //Convertir les données du formulaire en JSON
-    const jsonData = {};
-    for (const [key, value] of formData.entries()) {
-        jsonData[key] = value;
-    }
-
-    // Options de requête pour la méthode post (options = ce que j'envoie)
     const token = sessionStorage.getItem("token");
     const options = {
         method: "POST",
@@ -258,54 +314,157 @@ formAddImage.addEventListener("submit", (e) => {
         body: formData,
     };
 
-    console.log(jsonData);
-
     fetch(urlPostWork, options)
         .then((response) => {
             if (!response.ok) {
                 if (response.status === 500) {
                     throw new Error(`Une erreur inconnue est survenue`);
+                }else if (response.status === 401) {
+                    throw new Error(`Non autorisé`);
+                }else if (response.status === 400) {
+                    throw new Error(`Mauvaise requête`);
                 }
+
             }
             return response.json();
         })
         .then((newWork) => {
-            const gallery = document.querySelector(".gallery");
 
-            // Création des balises
-            const figureElement = document.createElement("figure");
-            const imageElement = document.createElement("img");
-            const captionElement = document.createElement("figcaption");
+            // AJOUT DANS GALERIE PRINCIPALE
+                const figureElement = document.createElement("figure");
+                const imageElement = document.createElement("img");
+                const captionElement = document.createElement("figcaption");
+                imageElement.setAttribute("src", newWork.imageUrl);
+                imageElement.setAttribute("alt", newWork.title);
+                figureElement.setAttribute("data-id-work-main", newWork.id); // id pour delete les works
+                figureElement.setAttribute("class", "figure-element");
+                captionElement.textContent = newWork.title;
+                messageDiv.style.display="block";
+                messageDiv.textContent = "L'image a été envoyée avec succès.";
+                figureElement.appendChild(imageElement);
+                figureElement.appendChild(captionElement);
+                gallery.appendChild(figureElement);
+            
 
-            // Ajout des attributs
-            imageElement.setAttribute("src", newWork.imageUrl);
-            imageElement.setAttribute("alt", newWork.title);
-            figureElement.setAttribute("data-id-work-main", newWork.id); // id pour delete les works
-            figureElement.setAttribute("class", "figure-element");
-            captionElement.textContent = newWork.title;
+            // AJOUT DANS GALERIE MODALE
+                document.querySelector("#empty-gallery-msg").style.display="none";
+                const figureModal = document.createElement("figure");
+                figureModal.setAttribute("class", "modal-figure");
+                figureModal.setAttribute("data-id-work-modal", newWork.id); //attribut personnalisé pour suppression travaux
 
-            // Ajout de l'image et de la caption à l'élément figure
-            figureElement.appendChild(imageElement);
-            figureElement.appendChild(captionElement);
+                //Images
+                const imageModal = document.createElement("img");
+                imageModal.setAttribute("class", "modal-img");
+                imageModal.setAttribute("src", newWork.imageUrl);
+                imageModal.setAttribute("alt", newWork.title);
 
-            // Ajout de la figure au body au niveau de la div gallery
-            gallery.appendChild(figureElement);
+                //Icons 
+                const iconDeleteModal = document.createElement("i");
+                const iconMoveModal = document.createElement("i");
+                iconDeleteModal.setAttribute("class", "delete-btn fa-solid fa-trash-can");
+                iconMoveModal.setAttribute("class", "move-btn fa-solid fa-arrows-up-down-left-right");
+                iconMoveModal.style.display = "none";
+                figureModal.addEventListener("mouseover", () => {
+                    figureModal.style.cursor = "pointer";
+                    iconMoveModal.style.display = "block";
+                });
+                figureModal.addEventListener("mouseout", () => {
+                    iconMoveModal.style.display = "none";
+                });
 
-            if (confirm('Voulez-vous ajouter un autre projet ?')) {
-                modalGalleryPage.style.display = "none";
-                modalAddPhotoPage.style.display = "block";
-                modalBackBtn.style.display = "block";
-            } else {
-                window.location.href = "../index.html";
-            }
+                //Figcaptions
+                const captionModal = document.createElement("figcaption");
+                const linkCaptionModal = document.createElement("a");
+                linkCaptionModal.setAttribute("href", "#");
+                linkCaptionModal.textContent = "éditer";
+
+                //AppendChilds
+                figureModal.appendChild(imageModal);
+                figureModal.appendChild(iconDeleteModal);
+                figureModal.appendChild(iconMoveModal);
+                captionModal.appendChild(linkCaptionModal);
+                figureModal.appendChild(captionModal);
+                figuresContainer.appendChild(figureModal);
+
+            let deleteBtn = document.querySelectorAll(".delete-btn");
+            const deleteAllWorkButton = document.querySelector("#delete-gallery-btn");
+            deleteBtn.forEach((btn) => {
+            btn.addEventListener("click", (e) => {
+                e.preventDefault(); 
+                const figureModalParent = btn.parentNode; // recupère la balise parente du bouton
+                const idWorkModal = figureModalParent.dataset.idWorkModal; // on récupère les id personnalisé des figure qu'on a recup de l'api
+                console.log(idWorkModal);
+                deleteWork(idWorkModal, figureModalParent); // figureModal = l'élément dans le DOM
+                });
+            });
+
+            deleteAllWorkButton.addEventListener("click", (e) => {
+                e.preventDefault();
+                const allFigureModal = document.querySelectorAll(".modal-figure");
+                console.log(allFigureModal)
+                allFigureModal.forEach(figureModal => {
+                    const idWorkModal = figureModal.getAttribute('data-id-work-modal');
+                    console.log(idWorkModal);
+                    deleteAllWork(idWorkModal,figureModal);
+                    })
+            });
+
+                // REDIRECTION 
+            setTimeout(() => {
+                if (confirm("Voulez-vous ajouter un autre projet ?")) {
+                    document.getElementById("imagePreview").style.display = "none";
+                    document.getElementById("iconPreviewImage").style.display = "block";
+                    document.getElementById("input-file-container").style.display = "block";
+                    document.getElementById("imageRestriction").style.display = "block";
+                    removeImageButton.style.display = "none";
+                    messageDiv.style.display="none";
+                    inputTitle.value = "";
+                    inputSelect.value = "";
+                } else {
+                    modalGalleryPage.style.display="flex";
+                    modalAddPhotoPage.style.display="none"
+                    document.getElementById("imagePreview").style.display = "none";
+                    document.getElementById("iconPreviewImage").style.display = "block";
+                    document.getElementById("input-file-container").style.display = "block";
+                    document.getElementById("imageRestriction").style.display = "block";
+                    removeImageButton.style.display = "none";
+                    messageDiv.style.display="none";
+                    inputTitle.value = "";
+                    inputSelect.value = "";
+                }
+            }, 1000);
         })
         .catch((error) => {
             console.log(error.message);
         });
 });
 
+
+
+/*----------  CHANGEMENT DE PAGE MODALE ----------*/
+
+const modalBackBtn = document.querySelector("#modal-back-btn");
+const modalGalleryPage = document.querySelector("#modal-gallery");
+const modalAddPhotoPage = document.querySelector("#modal-add-image");
+const addPhotoButton = document.querySelector(".submit-btn.submit-btn-1");
+
+modalBackBtn.addEventListener("click", () => {
+    messageSpan.style.display="none";
+    messageDiv.style.display="none";
+    modalGalleryPage.style.display = "flex";
+    modalAddPhotoPage.style.display = "none";
+    modalBackBtn.style.display = "none";
+});
+
+addPhotoButton.addEventListener("click", () => {
+    inputSelect.value = "";
+    modalGalleryPage.style.display = "none";
+    modalAddPhotoPage.style.display = "block";
+    modalBackBtn.style.display = "block";
+});
+
+
+
 // reste à faire
-// Dmd à l’utilisateur s’il veut ajouter d’autres projet. Si oui → redirection vers modal page 1 si non on ferme la modal
-// Mettre msg erreur dans la modale si éléments ne sont pas chargés à l’interieur
 // Enlever les commentaires de mon code
 // Préparer présentation projet

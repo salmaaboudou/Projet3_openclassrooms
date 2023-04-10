@@ -3,7 +3,6 @@ const errorMsg = document.querySelector(".error-msg");
 
 
 form.addEventListener("submit", (e) => {
-    console.log("jjjjjj")
     // Stockage des données du formulaire dans l'objet formData
     const inputEmail = document.querySelector("#email");
     const inputPassword = document.querySelector("#password");

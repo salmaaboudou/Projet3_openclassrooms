@@ -64,3 +64,11 @@ header{
 	font: 700 18px Syne, sans-serif;
 	color: red;
 }
+
+#email, #password{
+	padding-left: 20px;
+}
+
+#email:focus, #password:focus{
+	outline-color: #1d6154;
+}
