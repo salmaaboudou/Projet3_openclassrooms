@@ -3,8 +3,7 @@ const gallery = document.querySelector(".gallery");
 const categories = document.querySelector(".categories");
 const errorMsg = document.querySelector(".error-msg");
 const setCategoriesName = new Set();
-// const figureElementDelete = document.querySelector('.figure-element[data-id-work-main="data-id-work-modal"]');
-// console.log(figureElementDelete)
+
 
 function getAllWorksAndCategories() {
     fetch(urlGet)
@@ -18,43 +17,40 @@ function getAllWorksAndCategories() {
         })
         .then((works) => {
             /*----------  Travaux  ----------*/
-            console.log(works)
+            
             for (let i in works) {
-                // Création des balises figures, img et figcaptions
+                // figures, img et figcaptions
                 const figureElement = document.createElement("figure");
                 const imageElement = document.createElement("img");
                 const captionElement = document.createElement("figcaption");
 
-                // Ajout des attributs src , alt, titres, class aux balises
+                // Ajout des attributs 
                 imageElement.setAttribute("src", works[i].imageUrl);
                 imageElement.setAttribute("alt", works[i].title);
                 figureElement.setAttribute("data-id-work-main", works[i].id);  // id pour delete les works
                 figureElement.setAttribute("class", "figure-element");
                 captionElement.textContent = works[i].title;
 
-                // Ajout de l'image et de la caption à l'élément figure
+                // AppendChilds
                 figureElement.appendChild(imageElement);
                 figureElement.appendChild(captionElement);
-
-                // Ajout de la figure au body au niveau de la div gallery
                 gallery.appendChild(figureElement);
 
-                // Création d'un set (objet) contenant les noms des catégories
+                // Set contenant les noms des catégories
                 setCategoriesName.add(works[i].category.name);
             }
 
             /*----------  Catégories  ----------*/
 
             setCategoriesName.forEach((name) => {
-                // Création des boutons filtres pour chaque categorie
+    
                 const filterBtn = document.createElement("button");
 
-                // Ajout du nom des catégories, d'un id, et d'une class aux les boutons
+                // Attributs catégories
                 filterBtn.textContent = name;
                 filterBtn.setAttribute("id", name.replace(/\s+/g, "-")); // remplace les espaces par des tirets
                 filterBtn.setAttribute("class", "filter__btn");
 
-                // Ajout des boutons filtres au niveau de la balise "categories"
                 categories.appendChild(filterBtn);
             });
 

@@ -429,6 +429,7 @@ formAddImage.addEventListener("submit", (e) => {
                     document.getElementById("imageRestriction").style.display = "block";
                     removeImageButton.style.display = "none";
                     messageDiv.style.display="none";
+                    errorMsg.style.display="none"
                     inputTitle.value = "";
                     inputSelect.value = "";
                 }
